@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasaporte Kuromi</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Configuración Global --- */
+        body, html {
+            margin: 0; padding: 0; font-family: 'Patrick Hand', cursive; /* Nueva fuente */
+            overflow: hidden; height: 100%; background-color: #1a1a1a; /* Negro suave */
+            touch-action: manipulation; color: #fff; /* Texto blanco por defecto */
+        }
+
+        /* --- Contenedor de Páginas --- */
+        .page {
+            width: 100%; height: 100vh; position: absolute; top: 0; left: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease; visibility: hidden; opacity: 0; padding: 20px; box-sizing: border-box; line-height: 1.6;
+            background-color: #1a1a1a; /* Fondo negro suave */
+            /* Patrón sutil de calaveras Kuromi */
+            background-image: radial-gradient(rgba(255, 105, 180, 0.1) 1px, transparent 1px);
+            background-size: 15px 15px;
+        }
+        
+        .page.active { visibility: visible; opacity: 1; }
+        
+        h1 { font-family: 'Patrick Hand', cursive; font-size: 2.8em; color: #ff69b4; /* Fucsia */ text-align: center; text-shadow: 2px 2px #000; }
+        p { font-size: 1.3em; text-align: center; color: #eee; }
+
+        /* --- Botones Estilo Kuromi --- */
+        .kuromi-button {
+            background: #333; /* Gris oscuro */
+            border: 2px solid #ff69b4; /* Borde Fucsia */
+            color: #ff69b4; /* Texto Fucsia */
+            padding: 15px 30px; font-size: 1.1em; font-family: 'Patrick Hand', cursive; font-weight: bold;
+            border-radius: 50px; cursor: pointer; text-shadow: 1px 1px 1px #000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent; width: 90%; max-width: 320px; text-align: center; margin-bottom: 15px;
+        }
+        .kuromi-button:hover { background: #ff69b4; color: #000; box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4), 0 0 10px #ff69b4; transform: translateY(-2px); }
+        .kuromi-button:active { transform: translateY(1px); }
+        a.kuromi-button { text-decoration: none; box-sizing: border-box; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+        
+        /* --- Página 1: Bienvenida --- */
+        #page-bienvenida .animated-message { font-size: 1.4em; color: #ddd; opacity: 0; animation: fadeIn 2s ease 1s forwards; }
+        
+        /* --- Página 2: Portada (Logo) --- */
+        #page-portada { background-color: #2a2a2a; } /* Un gris un poco más claro */
+        #page-portada .logo { width: 250px; max-width: 80%; border-radius: 10px; margin-bottom: 20px; background: #fff; padding:10px; box-shadow: 0 0 15px rgba(255,105,180,0.5); }
+        #page-portada h1 { color: #ff69b4;}
+
+        /* --- Página 3: Historia (Kuromi) --- */
+        #page-historia { overflow-y: auto; justify-content: flex-start; background-color: #483d8b; /* Morado Oscuro */ }
+        .historia-container { display: flex; flex-direction: column; gap: 20px; align-items: center; justify-content: flex-start; width: 100%; }
+        .historia-container img { width: 280px; max-width: 70%; margin-top: 10px; filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.4)); }
+        .cuento-bloque { background: transparent; width: 90%; max-width: 500px; font-size: 1.2em; line-height: 1.6; text-align: center; }
+        #page-historia .cuento-bloque p { color: #eee; text-shadow: 1px 1px 1px #000; }
+        #page-historia .cuento-bloque strong { color: #ff69b4; /* Fucsia */ }
+        .historia-botones { margin-top: 15px; display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; padding-bottom: 30px; }
+        
+        /* -- Ventana Sorpresa -- */
+        #sorpresa-popup { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(50, 50, 50, 0.9); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; visibility: hidden; opacity: 0; transition: all 0.3s ease; z-index: 100; padding: 20px; box-sizing: border-box; }
+        #sorpresa-popup.active { visibility: visible; opacity: 1; }
+        .sorpresa-content { position: relative; padding: 30px 20px; border: 3px solid #ff69b4; border-radius: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5); text-align: center; width: 90%; max-width: 500px; background: #1a1a1a; }
+        #typewriter-text { font-family: 'Patrick Hand', cursive; font-weight: bold; font-size: 1.6em; color: #ff69b4; line-height: 1.6; text-shadow: 1px 1px #000; }
+        .close-popup { position: absolute; top: 5px; right: 10px; font-size: 40px; color: #ff69b4; cursor: pointer; background: none; border: none; width: auto; box-shadow: none; margin-bottom: 0; }
+        
+        /* -- Lluvia Kuromi -- */
+        @keyframes fall { 0% { top: -10%; transform: rotate(0deg); } 100% { top: 110%; transform: rotate(360deg); } }
+        .kuromi-rain { position: absolute; font-size: 1.5em; animation: fall linear infinite; top: -10%; opacity: 0.8; }
+        .skull { color: #ffc0cb; /* Rosa pastel */ }
+        .note { color: #ccc; /* Gris claro */ }
+
+        /* --- Página 4: Cierre --- */
+        #page-cierre { background-color: #000000; /* Negro sólido */ }
+        #page-cierre .logo { width: 200px; max-width: 70%; border-radius: 10px; background: #222; padding:10px; box-shadow: 0 0 10px rgba(255,105,180,0.3); }
+        #page-cierre .lema { font-size: 1.1em; color: #aaa; margin-top: 15px; }
+        #page-cierre .frase-final { font-size: 1.4em; color: #ff69b4; font-family: 'Patrick Hand', cursive; margin-top: 30px; margin-bottom: 30px; font-weight: bold; text-shadow: 1px 1px #000;}
+        
+        /* --- PÁGINA 5: Certificado --- */
+        #page-certificado { overflow-y: auto; justify-content: flex-start; background-color: #2a2a2a; }
+        .certificado-content { width: 95%; max-width: 700px; background: #1a1a1a; border: 5px solid #ff69b4; border-radius: 10px; padding: 20px; box-sizing: border-box; text-align: center; color: #eee; margin-top: 20px; }
+        .certificado-content h1 { color: #ff69b4; font-size: 1.8em; text-shadow: 1px 1px #000; border-bottom: 1px dashed #ff69b4; padding-bottom: 10px; }
+        .certificado-body { font-size: 1.2em; line-height: 2; margin-top: 20px; margin-bottom: 30px; }
+        .campo-rellenable { font-weight: bold; color: #fff; background: #333; padding: 2px 8px; border-radius: 5px; border-bottom: 1px solid #ff69b4; }
+        .campo-static { font-weight: bold; color: #ffc0cb; /* Rosa pastel */ } /* Para "Kuromi" */
+        
+    </style>
+</head>
+<body>
+
+    <div id="page-bienvenida" class="page active">
+        <h1>¡Hey!</h1>
+        <p class="animated-message">¿Lista para un poco de travesura?</p>
+        <button id="btn-comenzar" class="kuromi-button">🖤 Empezar</button>
+    </div>
+
+    <div id="page-portada" class="page">
+        <img src="logo.png" alt="Logo Trapo de Luz" class="logo"> 
+        <h1>Pasaporte Kuromi</h1>
+        <button id="btn-entrar" class="kuromi-button">¡Entrar!</button>
+    </div>
+
+    <div id="page-historia" class="page">
+        <div class="historia-container">
+            <img src="kuromi.png" alt="Kuromi"> 
+            <div class="cuento-bloque">
+                <p>¡Soy <strong>Kuromi</strong>!</p>
+                <p>Un poco ruda por fuera, pero adorable por dentro. ¡Vamos a divertirnos!</p>
+            </div>
+        </div>
+        <div class="historia-botones">
+            <button id="btn-certificado" class="kuromi-button">📜 Certificado de Travesura</button>
+            <button id="btn-sorpresa" class="kuromi-button">😈 ¡Sorpresa!</button>
+            <a href="https://www.instagram.com/trapodeluz/" target="_blank" class="kuromi-button">📸 Ver mi Banda</a>
+        </div>
+    </div>
+
+    <div id="page-cierre" class="page">
+        <img src="logo.png" alt="Logo Trapo de Luz" class="logo"> 
+        <p class="lema">"Cada trapo, una historia; cada historia, una sonrisa."</p>
+        <p class="frase-final">¡Misión Cumplida! Keep being you! 🤘</p>
+        <button id="btn-inicio" class="kuromi-button">🦇 Volver al Inicio</button>
+    </div>
+
+    <div id="page-certificado" class="page">
+        <div class="certificado-content">
+            <h1>Certificado Oficial</h1>
+            <h2>de Compañero de Travesuras</h2>
+            <div class="certificado-body">
+                Por la presente se certifica que<br>
+                <span class="campo-rellenable" id="cert-nombre">[Nombre del Adoptante]</span>
+                <br>ha unido fuerzas con<br>
+                <span class="campo-static">Kuromi</span>
+                <br>el día <span class="campo-rellenable" id="cert-fecha">[Fecha]</span>.
+                <br><br>
+                ¡Prepárense para el caos adorable!
+                <br><br>
+                Firmado:<br>
+                <strong>Kuromi 😈</strong>
+            </div>
+            <button id="btn-volver-historia" class="kuromi-button">Volver</button>
+        </div>
+    </div>
+
+    <div id="sorpresa-popup">
+        <div id="kuromi-rain-container"></div>
+        <div class="sorpresa-content">
+            <button class="close-popup" id="btn-cerrar-popup">&times;</button>
+            <div id="typewriter-text"></div>
+        </div>
+    </div>
+
+    <audio id="sound-background" src="kuromi_fondo.mp3" loop preload="auto"></audio>
+    <audio id="sound-magic" src="kuromi_magia.mp3" preload="auto"></audio>
+    <audio id="sound-click" src="kuromi_click.mp3" preload="auto"></audio>
+    <audio id="sound-bounce" src="kuromi_rebote.mp3" preload="auto"></audio>
+
+
+    <script>
+        // --- Referencias a Elementos ---
+        const pages = document.querySelectorAll('.page');
+        const btnComenzar = document.getElementById('btn-comenzar');
+        const btnEntrar = document.getElementById('btn-entrar');
+        const btnSorpresa = document.getElementById('btn-sorpresa');
+        const btnInicio = document.getElementById('btn-inicio');
+        const btnCerrarPopup = document.getElementById('btn-cerrar-popup');
+        const popup = document.getElementById('sorpresa-popup');
+        const btnCertificado = document.getElementById('btn-certificado');
+        const btnVolverHistoria = document.getElementById('btn-volver-historia');
+        
+        const soundMagic = document.getElementById('sound-magic');
+        const soundClick = document.getElementById('sound-click');
+        const soundBounce = document.getElementById('sound-bounce');
+        const soundBackground = document.getElementById('sound-background');
+        
+        // --- Variables de Estado ---
+        let audioUnlocked = false;
+        
+        // --- Funciones de Audio ---
+        function unlockAllAudio() {
+            console.log("Intentando desbloquear audio...");
+            if (audioUnlocked) { console.log("Audio ya desbloqueado."); return Promise.resolve(); }
+            const allSounds = [soundMagic, soundClick, soundBounce, soundBackground];
+            const promises = []; 
+            allSounds.forEach(sound => {
+                if (!sound) { console.error("Error: Elemento de audio no encontrado."); return; }
+                const promise = sound.play()
+                    .then(() => { sound.pause(); sound.currentTime = 0; console.log(`Audio ${sound.id} desbloqueado.`); })
+                    .catch(error => { console.warn(`No se pudo desbloquear ${sound.id}. Error: ${error.message}`); });
+                promises.push(promise);
+            });
+            return Promise.allSettled(promises).then(() => {
+                audioUnlocked = true;
+                console.log("Desbloqueo de audio completado.");
+                if (soundBackground && soundBackground.paused) {
+                    soundBackground.volume = 0.4; /* Un poco más alto para Kuromi */
+                    soundBackground.play().catch(e => console.error("Error al iniciar música de fondo:", e.message));
+                }
+            });
+        }
+        
+        function playSound(sound, reset = true) {
+            console.log(`Intentando reproducir ${sound ? sound.id : 'sonido nulo'}`);
+            if (!audioUnlocked) { console.log("Audio no desbloqueado, reproducción cancelada."); return; }
+            if (!sound) { console.error("Error: Intentando reproducir un sonido que no existe."); return; }
+            sound.play()
+                .then(() => { if (reset) { sound.currentTime = 0; } console.log(`Reproduciendo ${sound.id}`); })
+                .catch(error => { console.error(`Error al reproducir ${sound.id}: ${error.message}`); });
+        }
+        
+        // --- Función de Navegación ---
+        function goToPage(pageId) {
+            console.log(`Navegando a: ${pageId}`);
+            pages.forEach(page => { page.classList.remove('active'); });
+            const newPage = document.getElementById(pageId);
+            if (newPage) { newPage.classList.add('active'); newPage.scrollTop = 0; console.log(`Página ${pageId} activada.`); } 
+            else { console.error(`Error: No se encontró la página con ID ${pageId}`); }
+        }
+
+        // --- Event Listeners ---
+        if (btnComenzar) {
+            btnComenzar.addEventListener('click', (e) => {
+                e.stopPropagation(); console.log("Botón Comenzar clickeado.");
+                unlockAllAudio().then(() => {
+                     if(audioUnlocked) playSound(soundMagic); 
+                     setTimeout(() => { goToPage('page-portada'); }, 100); 
+                });
+            });
+        } else { console.error("Error: Botón 'btn-comenzar' no encontrado."); }
+
+        if (btnEntrar) { btnEntrar.addEventListener('click', (e) => { e.stopPropagation(); playSound(soundClick); goToPage('page-historia'); }); } 
+        else { console.error("Error: Botón 'btn-entrar' no encontrado."); }
+
+        if (btnInicio) { btnInicio.addEventListener('click', (e) => { e.stopPropagation(); playSound(soundBounce); goToPage('page-bienvenida'); }); } 
+        else { console.error("Error: Botón 'btn-inicio' no encontrado."); }
+
+        if (btnSorpresa) {
+            btnSorpresa.addEventListener('click', (e) => {
+                e.stopPropagation(); playSound(soundMagic);
+                if (popup) popup.classList.add('active'); else console.error("Popup no encontrado");
+                startKuromiRain();
+                const textoSorpresa = "¡Boo! ¡Nunca dejes que nadie apague tu chispa! ¡Eres increíble tal como eres! ✨🖤";
+                startTypewriter(textoSorpresa, 'typewriter-text');
+            });
+        } else { console.error("Error: Botón 'btn-sorpresa' no encontrado."); }
+
+        if (btnCerrarPopup) { btnCerrarPopup.addEventListener('click', (e) => { e.stopPropagation(); if (popup) popup.classList.remove('active'); stopKuromiRain(); }); } 
+        else { console.error("Error: Botón 'btn-cerrar-popup' no encontrado."); }
+        
+        function popularCertificado() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nombre = urlParams.get('nombre'); 
+            const fecha = urlParams.get('fecha');
+            const elNombre = document.getElementById('cert-nombre'); 
+            const elFecha = document.getElementById('cert-fecha');
+            // 'muneco' es fijo como Kuromi en el HTML
+            if (elNombre) { if (nombre) { elNombre.textContent = nombre; } else { elNombre.textContent = "[Nombre del Adoptante]"; } } else { console.error("Elemento cert-nombre no encontrado"); }
+            if (elFecha) { if (fecha) { elFecha.textContent = fecha; } else { elFecha.textContent = "[Fecha]"; } } else { console.error("Elemento cert-fecha no encontrado"); }
+        }
+        
+        if (btnCertificado) { btnCertificado.addEventListener('click', (e) => { e.stopPropagation(); playSound(soundClick); popularCertificado(); goToPage('page-certificado'); }); } 
+        else { console.error("Error: Botón 'btn-certificado' no encontrado."); }
+
+        if (btnVolverHistoria) { btnVolverHistoria.addEventListener('click', (e) => { e.stopPropagation(); playSound(soundClick); goToPage('page-historia'); }); } 
+        else { console.error("Error: Botón 'btn-volver-historia' no encontrado."); }
+        
+        /* --- Funciones de Efectos --- */
+        function startTypewriter(txt, elementId) { let i = 0; const speed = 90; const target = document.getElementById(elementId); if (!target) { console.error(`Elemento ${elementId} no encontrado para typewriter`); return; } target.innerHTML = ''; function type() { if (txt.substring(i, i + 4).toLowerCase() === '<br>') { target.innerHTML += '<br>'; i += 4; } if (i < txt.length) { target.innerHTML += txt.charAt(i); i++; setTimeout(type, speed); } } type(); }
+        
+        // Lluvia Kuromi
+        const rainContainer = document.getElementById('kuromi-rain-container'); 
+        let rainInterval; 
+        const rainChars = ['💀', '💖', '🖤', '🎶']; // Calavera rosa, corazón roto negro, nota musical
+
+        function startKuromiRain() { 
+            stopKuromiRain(); 
+            rainInterval = setInterval(createRainElement, 150); 
+        }
+        function stopKuromiRain() { 
+            clearInterval(rainInterval); 
+            if (rainContainer) { rainContainer.innerHTML = ''; } 
+        }
+        function createRainElement() { 
+            const element = document.createElement('div'); 
+            element.classList.add('kuromi-rain'); 
+            const char = rainChars[Math.floor(Math.random() * rainChars.length)];
+            element.innerText = char;
+            // Distingue colores
+            if (char === '💀') {
+                 element.style.color = '#ffc0cb'; // Rosa
+                 element.style.fontSize = '1.8em';
+            } else if (char === '🖤') {
+                 element.style.color = '#ccc'; // Gris
+                 element.style.fontSize = '1.5em';
+            } else {
+                 element.style.color = '#ff69b4'; // Fucsia
+                 element.style.fontSize = '1.6em';
+            }
+             
+            element.style.left = Math.random() * 100 + 'vw'; 
+            element.style.animationDuration = (Math.random() * 3) + 4 + 's'; 
+            if (rainContainer) { rainContainer.appendChild(element); } 
+            setTimeout(() => { element.remove(); }, 7000); 
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => { console.log("DOM cargado. Kuromi lista."); });
+    </script>
+</body>
+</html>
