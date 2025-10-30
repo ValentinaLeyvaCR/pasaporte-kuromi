@@ -34,26 +34,34 @@
 
     /* Header */
     header{
-      position:relative; z-index:2; /* text-align:center; <-- QUITADO */ padding:14px 16px; font-weight:900;
+      position:relative; z-index:2; padding:14px 16px; font-weight:900;
       background: linear-gradient(90deg, rgba(255,60,171,.18), rgba(155,93,229,.12));
       border-bottom:1px solid rgba(255,255,255,.08);
-      /* --- AÑADIDO PARA FLEXBOX --- */
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
     .subtitle{font-size:12px; opacity:.8; font-weight:600}
-    /* --- AÑADIDO PARA EL HEADER --- */
-    .header-side{flex:1}
-    .header-side:last-child{text-align:right}
-    .header-center{text-align:center}
-    /* --- FIN DE LO AÑADIDO --- */
+    .header-side{flex:1; display:flex; align-items:center;} /* Añadido display:flex y align-items:center */
+    .header-side:last-child{justify-content:flex-end;} /* Para alinear el botón a la derecha */
+    .header-center{text-align:center;}
+
     #instaTop{
-      /* position:absolute; right:10px; top:10px; z-index:3; <-- QUITADO */
-      position: relative; /* <-- AÑADIDO */
+      position: relative;
       background:var(--accent); color:#fff; text-decoration:none; font-weight:900;
-      padding:8px 12px; border-radius:999px;
+      padding:8px; /* Reducido el padding para un botón más compacto */
+      border-radius:999px;
       box-shadow:0 10px 24px rgba(255,60,171,.35);
+      display: flex; /* Para centrar el SVG */
+      align-items: center;
+      justify-content: center;
+      width: 40px; /* Ancho fijo para el botón */
+      height: 40px; /* Alto fijo para el botón */
+    }
+    #instaTop svg {
+        width: 20px; /* Tamaño del icono */
+        height: 20px;
+        fill: currentColor; /* El icono tomará el color del texto */
     }
 
     .wrap{position:relative; z-index:2; max-width:520px; margin:10px auto; padding:0 12px}
@@ -166,7 +174,9 @@
       <div class="subtitle">"¡A jugar, mortal del caos!" 😈</div>
     </div>
     <div class="header-side">
-      <a id="instaTop" href="https://www.instagram.com/trapodeluz/">📸 @trapodeluz</a>
+      <a id="instaTop" href="https://www.instagram.com/trapodeluz/" aria-label="Visita nuestro Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M224.1 140.4c-35.3-43.7-44.5-94.6-47-140.4H0v512h448V0H273.9c-2.5 45.8-11.7 96.7-47 140.4zM224 374c-47.5 0-86-38.5-86-86s38.5-86 86-86 86 38.5 86 86-38.5 86-86 86zM320 186.4c-12.8 0-23.2-10.4-23.2-23.2s10.4-23.2 23.2-23.2 23.2 10.4 23.2 23.2-10.4 23.2-23.2 23.2z"/></svg>
+      </a>
     </div>
   </header>
 
@@ -306,3 +316,4 @@
   </script>
 </body>
 </html>
+
