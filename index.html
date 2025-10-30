@@ -34,13 +34,23 @@
 
     /* Header */
     header{
-      position:relative; z-index:2; text-align:center; padding:14px 16px; font-weight:900;
+      position:relative; z-index:2; /* text-align:center; <-- QUITADO */ padding:14px 16px; font-weight:900;
       background: linear-gradient(90deg, rgba(255,60,171,.18), rgba(155,93,229,.12));
-      border-bottom:1px solid rgba(255,255,255,.08)
+      border-bottom:1px solid rgba(255,255,255,.08);
+      /* --- AÑADIDO PARA FLEXBOX --- */
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
     .subtitle{font-size:12px; opacity:.8; font-weight:600}
+    /* --- AÑADIDO PARA EL HEADER --- */
+    .header-side{flex:1}
+    .header-side:last-child{text-align:right}
+    .header-center{text-align:center}
+    /* --- FIN DE LO AÑADIDO --- */
     #instaTop{
-      position:absolute; right:10px; top:10px; z-index:3;
+      /* position:absolute; right:10px; top:10px; z-index:3; <-- QUITADO */
+      position: relative; /* <-- AÑADIDO */
       background:var(--accent); color:#fff; text-decoration:none; font-weight:900;
       padding:8px 12px; border-radius:999px;
       box-shadow:0 10px 24px rgba(255,60,171,.35);
@@ -150,9 +160,14 @@
   <div class="bgFX" id="bgFX"></div>
 
   <header>
-    <div>Kuromi – Atrapa los Objetos</div>
-    <div class="subtitle">"¡A jugar, mortal del caos!" 😈</div>
-    <a id="instaTop" href="https://www.instagram.com/trapodeluz/">📸 @trapodeluz</a>
+    <div class="header-side"></div>
+    <div class="header-center">
+      <div>Kuromi – Atrapa los Objetos</div>
+      <div class="subtitle">"¡A jugar, mortal del caos!" 😈</div>
+    </div>
+    <div class="header-side">
+      <a id="instaTop" href="https://www.instagram.com/trapodeluz/">📸 @trapodeluz</a>
+    </div>
   </header>
 
   <div class="wrap">
@@ -180,7 +195,6 @@
     </div>
   </div>
 
-  <!-- Certificado -->
   <section id="certificado">
     <div class="sheet">
       <div class="pixel-frame">
